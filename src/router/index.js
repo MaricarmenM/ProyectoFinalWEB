@@ -29,6 +29,16 @@ const routes = [
 		name: 'HomeMedico',
 		component: () => import('../views/Medico/HomeMedico.vue'),
 	},
+	{
+		path: '/homeadmin',
+		name: 'HomeAdmin',
+		component: () => import('../views/Administrador/HomeAdmin.vue'),
+	},
+	{
+		path: '/usuario',
+		name: 'Usuario',
+		component: () => import('../views/Administrador/Usuario.vue'),
+	},
 ];
 
 const router = new VueRouter({

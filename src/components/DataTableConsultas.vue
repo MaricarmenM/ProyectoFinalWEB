@@ -231,7 +231,7 @@ export default {
 				);
 				const array = await data.json();
 				array.forEach(function(tupla, index) {
-					tupla.fecha = new Date().toISOString().substr(0, 10);
+					tupla.fecha = new Date(tupla.nacimiento).toISOString().substr(0, 10);
 					if (tupla.sospechoso) {
 						tupla.sospechoso = 'Con síntomas';
 					} else {
