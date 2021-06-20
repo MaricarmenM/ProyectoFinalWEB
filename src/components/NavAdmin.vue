@@ -2,7 +2,7 @@
 	<div>
 		<v-app-bar color="#008a17" dark>
 			<v-app-bar-nav-icon>
-				<router-link to="/homeuser">
+				<router-link to="/homeadmin">
 					<v-img
 						alt="ITC Logo"
 						class="shrink mx-2"
@@ -93,7 +93,7 @@ export default {
 					this.$router.push('/usuario');
 					break;
 				case 1:
-					this.$router.push('/depto');
+					this.$router.push('/departamento');
 					break;
 				case 2:
 					this.$router.push('/tipousuario');

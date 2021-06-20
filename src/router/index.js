@@ -39,6 +39,31 @@ const routes = [
 		name: 'Usuario',
 		component: () => import('../views/Administrador/Usuario.vue'),
 	},
+	{
+		path: '/departamento',
+		name: 'Departamento',
+		component: () => import('../views/Administrador/Departamento.vue'),
+	},
+	{
+		path: '/tipoUsuario',
+		name: 'TipoUsuario',
+		component: () => import('../views/Administrador/TipoUsuario.vue'),
+	},
+	{
+		path: '/tipoPrueba',
+		name: 'TipoPrueba',
+		component: () => import('../views/Administrador/TipoPrueba.vue'),
+	},
+	{
+		path: '/medicamento',
+		name: 'Medicamentos',
+		component: () => import('../views/Administrador/Medicamento.vue'),
+	},
+	{
+		path: '/pregunta',
+		name: 'Preguntas',
+		component: () => import('../views/Administrador/Preguntas.vue'),
+	},
 ];
 
 const router = new VueRouter({

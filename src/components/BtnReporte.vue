@@ -1,8 +1,10 @@
 <template>
-	<router-link :to="link">
-		<v-icon x-large>{{ image }}</v-icon>
+	<div>
+			<router-link :to="link">
+			<v-icon x-large>{{ image }}</v-icon>
+		</router-link>
 		<div class="text-decoration-none">{{ texto }}</div>
-	</router-link>
+	</div>
 </template>
 
 <script>

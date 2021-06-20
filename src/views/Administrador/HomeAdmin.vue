@@ -25,6 +25,46 @@
 							tag="button"
 							width="100%"
 						/>
+						<BtnReporte
+							class="iconApp"
+							texto="Departamentos"
+							link="departamento"
+							image="mdi-bank"
+							tag="button"
+							width="100%"
+						/>
+						<BtnReporte
+							class="iconApp"
+							texto="Tipo de Usuarios"
+							link="tipoUsuario"
+							image="mdi-book-account"
+							tag="button"
+							width="100%"
+						/>
+						<BtnReporte
+							class="iconApp"
+							texto="Tipos de Pruebas"
+							link="tipoPrueba"
+							image="mdi-test-tube"
+							tag="button"
+							width="100%"
+						/>
+						<BtnReporte
+							class="iconApp"
+							texto="Medicamentos"
+							link="medicamento"
+							image="mdi-pill"
+							tag="button"
+							width="100%"
+						/>
+						<BtnReporte
+							class="iconApp"
+							texto="Preguntas"
+							link="pregunta"
+							image="mdi-clipboard-list"
+							tag="button"
+							width="100%"
+						/>
 					</v-col>
 				</v-row>
 			</v-container>
@@ -94,10 +134,10 @@ export default {
 
 <style>
 .container-custom {
-	width: 40%;
+	width: 60%;
 }
 .iconApp {
-	width: 25%;
-	height: 180px;
+	width: 45%;
+	height: 100px;
 }
 </style>

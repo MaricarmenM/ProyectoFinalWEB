@@ -7,7 +7,7 @@
 			<v-container fluid class="container-custom">
 				<v-row align="center" no-gutters justify="center">
 					<v-col cols="12">
-						<CardUsuarios />
+						<CardMedicamentos />
 					</v-col>
 				</v-row>
 			</v-container>
@@ -16,15 +16,15 @@
 </template>
 
 <script>
-import CardUsuarios from '../../components/CardUsuarios.vue';
+import CardMedicamentos from '../../components/CardMedicamentos.vue';
 import NavAdmin from '../../components/NavAdmin.vue';
 export default {
-	components: { NavAdmin, CardUsuarios },
+	components: { NavAdmin, CardMedicamentos },
 };
 </script>
 
 <style scoped>
 .container-custom {
-	width: 80%;
+	width: 60%;
 }
 </style>
