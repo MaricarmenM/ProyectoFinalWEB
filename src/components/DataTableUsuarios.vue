@@ -30,17 +30,17 @@
 										>
 											<template v-slot:activator="{ on, attrs }">
 												<v-text-field
-													v-model="editedItem.date"
+													v-model="editedItem.nacimiento"
 													label="Fecha"
 													persistent-hint
 													prepend-icon="mdi-calendar"
 													v-bind="attrs"
-													@blur="editedItem.date = parseDate(dateFormatted)"
+													@blur="editedItem.nacimiento = parseDate(dateFormatted)"
 													v-on="on"
 												></v-text-field>
 											</template>
 											<v-date-picker
-												v-model="editedItem.date"
+												v-model="editedItem.nacimiento"
 												no-title
 												@input="nacimiento = false"
 											></v-date-picker>
@@ -51,19 +51,36 @@
 										<v-text-field v-model="editedItem.nombre" label="Nombre"></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editedItem.apellidos" label="Apellidos"></v-text-field>
+										<v-text-field
+											v-model="editedItem.apellidos"
+											label="Apellidos"
+										></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editedItem.email" label="Email"></v-text-field>
+										<v-text-field v-model="editedItem.email" label="Contraseña"></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editedItem.direccion" label="Direcciòn"></v-text-field>
+										<v-text-field v-model="editedItem.password" label="Email"></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-select	:items="tipos" v-model="editedItem.idtipo" label="Tipo Usuario"></v-select>
+										<v-text-field
+											v-model="editedItem.direccion"
+											label="Direcciòn"
+										></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-select	:items="area" v-model="editedItem.idarea" label="Departamento"></v-select>
+										<v-select
+											:items="tipos"
+											v-model="editedItem.idtipo"
+											label="Tipo Usuario"
+										></v-select>
+									</v-col>
+									<v-col cols="12" sm="6" md="4">
+										<v-select
+											:items="area"
+											v-model="editedItem.idarea"
+											label="Departamento"
+										></v-select>
 									</v-col>
 								</v-row>
 							</v-container>
@@ -114,8 +131,21 @@ export default {
 	data: (vm) => ({
 		dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
 		nacimiento: false,
-		tipos: ['Medico', 'Alumno','Docente'],
-		area: ['Servicios Escolares', 'Recursos humanos'],
+		tipos: [
+			{ text: 'Estudiante', value: '1' },
+			{ text: 'Médico', value: '2' },
+			{ text: 'Profesor', value: '3' },
+			{ text: 'Administrador', value: '4' },
+			{ text: 'Monitor', value: '5' },
+			{ text: 'Personal Directivo', value: '6' },
+		],
+		area: [
+			{ text: 'Ingenieria en Sistemas Computacionales', value: '1' },
+			{ text: 'Ingenieria Industrial', value: '2' },
+			{ text: 'Ingenieria Electronica', value: '3' },
+			{ text: 'Servicios Escolares', value: '4' },
+			{ text: 'Recursos Humanos', value: '5' },
+		],
 		dialog: false,
 		dialogDelete: false,
 		headers: [
@@ -138,7 +168,6 @@ export default {
 		desserts: [],
 		editedIndex: -1,
 		editedItem: {
-			id: '',
 			email: '',
 			nombre: '',
 			apellidos: '',
@@ -148,7 +177,6 @@ export default {
 			idtipo: '',
 		},
 		defaultItem: {
-			id: '',
 			email: '',
 			nombre: '',
 			apellidos: '',
@@ -164,7 +192,7 @@ export default {
 			return this.editedIndex === -1 ? 'Usuario Nuevo' : 'Editar Usuario';
 		},
 		computedDateFormatted() {
-			return this.formatDate(this.editedItem.date);
+			return this.formatDate(this.editedItem.nacimiento);
 		},
 	},
 
@@ -239,11 +267,32 @@ export default {
 			});
 		},
 
-		save() {
+		async save() {
 			if (this.editedIndex > -1) {
 				Object.assign(this.desserts[this.editedIndex], this.editedItem);
 			} else {
-				this.desserts.push(this.editedItem);
+				console.log(this.editItem.idarea.value);
+				console.log(this.editItem.idtipo);
+				//this.desserts.push(this.editedItem);
+				/*try {
+					const data = await fetch('https://api-tedw-covid.herokuapp.com/usuario/', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							nombre: this.editedItem.nombre,
+							apellidos: this.editedItem.nombre,
+							nombre: this.editedItem.nombre,
+							nombre: this.editedItem.nombre,
+							nombre: this.editedItem.nombre,
+							nombre: this.editedItem.nombre,
+							nombre: this.editedItem.nombre,
+						}),
+					});
+					const array = await data.json();
+					this.desserts = array;
+				} catch (error) {
+					console.log(error);
+				}*/
 			}
 			this.close();
 		},

@@ -19,7 +19,10 @@
 							<v-container>
 								<v-row>
 									<v-col cols="12" sm="6" md="12">
-										<v-text-field v-model="editedItem.carreradepto" label="Departamento"></v-text-field>
+										<v-text-field
+											v-model="editedItem.carreradepto"
+											label="Departamento"
+										></v-text-field>
 									</v-col>
 								</v-row>
 							</v-container>
@@ -39,7 +42,9 @@
 
 				<v-dialog v-model="dialogDelete" max-width="500px">
 					<v-card>
-						<v-card-title class="text-h5">Estas seguro de eliminar el Departamento?</v-card-title>
+						<v-card-title class="text-h5"
+							>Estas seguro de eliminar el Departamento?</v-card-title
+						>
 						<v-card-actions>
 							<v-spacer></v-spacer>
 							<v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -48,10 +53,9 @@
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
-
 			</v-toolbar>
 		</template>
-    
+
 		<template v-slot:item.actions="{ item }">
 			<v-icon small class="mr-2" @click="editItem(item)">
 				mdi-pencil
@@ -71,7 +75,6 @@
 <script>
 export default {
 	data: (vm) => ({
-		dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
 		dialog: false,
 		dialogDelete: false,
 		headers: [
@@ -88,11 +91,11 @@ export default {
 		desserts: [],
 		editedIndex: -1,
 		editedItem: {
-			id: '',
+			id: 0,
 			carreradepto: '',
 		},
 		defaultItem: {
-			id: '',
+			id: 0,
 			carreradepto: '',
 		},
 	}),
@@ -100,9 +103,6 @@ export default {
 	computed: {
 		formTitle() {
 			return this.editedIndex === -1 ? 'Departamento Nuevo' : 'Editar';
-		},
-		computedDateFormatted() {
-			return this.formatDate(this.editedItem.date);
 		},
 	},
 
@@ -129,18 +129,6 @@ export default {
 				console.log(error);
 			}
 		},
-		formatDate(date) {
-			if (!date) return null;
-
-			const [year, month, day] = date.split('-');
-			return `${month}/${day}/${year}`;
-		},
-		parseDate(date) {
-			if (!date) return null;
-
-			const [month, day, year] = date.split('/');
-			return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-		},
 		editItem(item) {
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
@@ -148,6 +136,7 @@ export default {
 		},
 
 		deleteItem(item) {
+			this.deleteDepto(item.id);
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.dialogDelete = true;
@@ -173,12 +162,50 @@ export default {
 				this.editedIndex = -1;
 			});
 		},
-
+		async saveDepto() {
+			try {
+				const data = await fetch('https://api-tedw-covid.herokuapp.com/area/', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						carreradepto: this.editedItem.carreradepto,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async updateDepto(item) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/area/${item.id}`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						carreradepto: item.carreradepto,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async deleteDepto(id) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/area/${id}`, {
+					method: 'DELETE',
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
 		save() {
 			if (this.editedIndex > -1) {
+				this.updateDepto(this.editedItem);
 				Object.assign(this.desserts[this.editedIndex], this.editedItem);
 			} else {
-				this.desserts.push(this.editedItem);
+				this.saveDepto();
+				this.desserts = [];
+				this.initialize();
+				//this.desserts.push(this.editedItem);
 			}
 			this.close();
 		},
