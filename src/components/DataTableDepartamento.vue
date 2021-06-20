@@ -205,7 +205,6 @@ export default {
 				this.saveDepto();
 				this.desserts = [];
 				this.initialize();
-				//this.desserts.push(this.editedItem);
 			}
 			this.close();
 		},
