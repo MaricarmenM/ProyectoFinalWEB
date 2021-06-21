@@ -40,7 +40,7 @@
 					</v-card>
 				</v-dialog>
 
-				<v-dialog v-model="dialogDelete" max-width="500px">
+				<v-dialog v-model="dialogDelete" max-width="550px">
 					<v-card>
 						<v-card-title class="text-h5"
 							>Estas seguro de eliminar el Departamento?</v-card-title
@@ -203,8 +203,7 @@ export default {
 				Object.assign(this.desserts[this.editedIndex], this.editedItem);
 			} else {
 				this.saveDepto();
-				this.desserts = [];
-				this.initialize();
+				this.desserts.push(this.editedItem);
 			}
 			this.close();
 		},

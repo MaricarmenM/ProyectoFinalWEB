@@ -71,7 +71,6 @@
 <script>
 export default {
 	data: (vm) => ({
-		dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
 		dialog: false,
 		dialogDelete: false,
 		headers: [
@@ -101,9 +100,6 @@ export default {
 		formTitle() {
 			return this.editedIndex === -1 ? 'Pregunta Nueva' : 'Editar';
 		},
-		computedDateFormatted() {
-			return this.formatDate(this.editedItem.date);
-		},
 	},
 
 	watch: {
@@ -129,18 +125,6 @@ export default {
 				console.log(error);
 			}
 		},
-		formatDate(date) {
-			if (!date) return null;
-
-			const [year, month, day] = date.split('-');
-			return `${month}/${day}/${year}`;
-		},
-		parseDate(date) {
-			if (!date) return null;
-
-			const [month, day, year] = date.split('/');
-			return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-		},
 		editItem(item) {
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
@@ -148,6 +132,7 @@ export default {
 		},
 
 		deleteItem(item) {
+			this.deletePregunta(item.id);
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.dialogDelete = true;
@@ -173,11 +158,47 @@ export default {
 				this.editedIndex = -1;
 			});
 		},
-
+		async savePregunta() {
+			try {
+				const data = await fetch('https://api-tedw-covid.herokuapp.com/pregunta/', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						pregunta: this.editedItem.pregunta,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async updatePregunta(item) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/pregunta/${item.id}`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						pregunta: item.pregunta,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async deletePregunta(id) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/pregunta/${id}`, {
+					method: 'DELETE',
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
 		save() {
 			if (this.editedIndex > -1) {
+				this.updatePregunta(this.editedItem);
 				Object.assign(this.desserts[this.editedIndex], this.editedItem);
 			} else {
+				this.savePregunta();
 				this.desserts.push(this.editedItem);
 			}
 			this.close();

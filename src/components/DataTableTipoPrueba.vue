@@ -71,7 +71,6 @@
 <script>
 export default {
 	data: (vm) => ({
-		dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
 		dialog: false,
 		dialogDelete: false,
 		headers: [
@@ -101,9 +100,6 @@ export default {
 		formTitle() {
 			return this.editedIndex === -1 ? 'Tipo de Prueba Nuevo' : 'Editar';
 		},
-		computedDateFormatted() {
-			return this.formatDate(this.editedItem.date);
-		},
 	},
 
 	watch: {
@@ -129,18 +125,6 @@ export default {
 				console.log(error);
 			}
 		},
-		formatDate(date) {
-			if (!date) return null;
-
-			const [year, month, day] = date.split('-');
-			return `${month}/${day}/${year}`;
-		},
-		parseDate(date) {
-			if (!date) return null;
-
-			const [month, day, year] = date.split('/');
-			return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-		},
 		editItem(item) {
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
@@ -148,6 +132,7 @@ export default {
 		},
 
 		deleteItem(item) {
+			this.deleteTipo(item.id);
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.dialogDelete = true;
@@ -173,11 +158,49 @@ export default {
 				this.editedIndex = -1;
 			});
 		},
-
+		async saveTipo() {
+			try {
+				const data = await fetch('https://api-tedw-covid.herokuapp.com/tipoPrueba/', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						id: this.editedItem.id,
+						tipoprueba: this.editedItem.tipoprueba,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async updateTipo(item) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/tipoPrueba/${item.id}`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						id: this.editedItem.id,
+						tipoprueba: item.tipoprueba,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async deleteTipo(id) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/tipoPrueba/${id}`, {
+					method: 'DELETE',
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
 		save() {
 			if (this.editedIndex > -1) {
+				this.updateTipo(this.editedItem);
 				Object.assign(this.desserts[this.editedIndex], this.editedItem);
 			} else {
+				this.saveTipo();
 				this.desserts.push(this.editedItem);
 			}
 			this.close();

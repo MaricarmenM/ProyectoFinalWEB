@@ -71,7 +71,6 @@
 <script>
 export default {
 	data: (vm) => ({
-		dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
 		dialog: false,
 		dialogDelete: false,
 		headers: [
@@ -101,9 +100,6 @@ export default {
 		formTitle() {
 			return this.editedIndex === -1 ? 'Medicamento Nuevo' : 'Editar';
 		},
-		computedDateFormatted() {
-			return this.formatDate(this.editedItem.date);
-		},
 	},
 
 	watch: {
@@ -129,18 +125,6 @@ export default {
 				console.log(error);
 			}
 		},
-		formatDate(date) {
-			if (!date) return null;
-
-			const [year, month, day] = date.split('-');
-			return `${month}/${day}/${year}`;
-		},
-		parseDate(date) {
-			if (!date) return null;
-
-			const [month, day, year] = date.split('/');
-			return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-		},
 		editItem(item) {
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
@@ -148,6 +132,7 @@ export default {
 		},
 
 		deleteItem(item) {
+			this.deleteMedicina(item.id);
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.dialogDelete = true;
@@ -173,11 +158,47 @@ export default {
 				this.editedIndex = -1;
 			});
 		},
-
+		async saveMedicina() {
+			try {
+				const data = await fetch('https://api-tedw-covid.herokuapp.com/medicamento/', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						medicamento: this.editedItem.medicamento,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async updateMedicina(item) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/medicamento/${item.id}`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						medicamento: item.medicamento,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async deleteMedicina(id) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/medicamento/${id}`, {
+					method: 'DELETE',
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
 		save() {
 			if (this.editedIndex > -1) {
+				this.updateMedicina(this.editedItem);
 				Object.assign(this.desserts[this.editedIndex], this.editedItem);
 			} else {
+				this.saveMedicina();
 				this.desserts.push(this.editedItem);
 			}
 			this.close();

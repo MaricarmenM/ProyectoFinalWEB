@@ -2,7 +2,7 @@
 	<v-card class="mt-2">
 		<div class="card-header">
 			<v-card-title class="white--text text-h5">
-				Departamentos
+		   Tipos de Prueba
 			</v-card-title>
 			<v-card-subtitle class="white--text text-subtitle-2">
 				Se muestra los tipos de prueba existentes, podras dar de alta a nuevos asi como eliminarlos o editarlos

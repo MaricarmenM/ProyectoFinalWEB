@@ -71,7 +71,6 @@
 <script>
 export default {
 	data: (vm) => ({
-		dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
 		nacimiento: false,
 		dialog: false,
 		dialogDelete: false,
@@ -102,9 +101,6 @@ export default {
 		formTitle() {
 			return this.editedIndex === -1 ? 'Tipo de Usuario Nuevo' : 'Editar';
 		},
-		computedDateFormatted() {
-			return this.formatDate(this.editedItem.date);
-		},
 	},
 
 	watch: {
@@ -130,18 +126,6 @@ export default {
 				console.log(error);
 			}
 		},
-		formatDate(date) {
-			if (!date) return null;
-
-			const [year, month, day] = date.split('-');
-			return `${month}/${day}/${year}`;
-		},
-		parseDate(date) {
-			if (!date) return null;
-
-			const [month, day, year] = date.split('/');
-			return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-		},
 		editItem(item) {
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
@@ -149,6 +133,7 @@ export default {
 		},
 
 		deleteItem(item) {
+			this.deleteTipoU(item.id);
 			this.editedIndex = this.desserts.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.dialogDelete = true;
@@ -174,11 +159,47 @@ export default {
 				this.editedIndex = -1;
 			});
 		},
-
+		async saveTipoU() {
+			try {
+				const data = await fetch('https://api-tedw-covid.herokuapp.com/tipousuario/', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						tipo: this.editedItem.tipo,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async updateTipoU(item) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/tipousuario/${item.id}`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						tipo: this.editedItem.tipo,
+					}),
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async deleteTipoU(id) {
+			try {
+				const data = await fetch(`https://api-tedw-covid.herokuapp.com/tipousuario/${id}`, {
+					method: 'DELETE',
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		},
 		save() {
 			if (this.editedIndex > -1) {
+				this.updateTipoU(this.editedItem);
 				Object.assign(this.desserts[this.editedIndex], this.editedItem);
 			} else {
+				this.saveTipoU();
 				this.desserts.push(this.editedItem);
 			}
 			this.close();
